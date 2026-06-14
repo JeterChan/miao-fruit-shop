@@ -1,14 +1,17 @@
+name: miao-fruit-shop-backend
+
 services:
   db:
     image: postgres:17
+    container_name: miao-fruit-shop-db
     environment:
       POSTGRES_USER: miao
       POSTGRES_PASSWORD: miao
       POSTGRES_DB: miao
     ports:
-      - "5432:5432"
+      - "55432:5432"
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - miao_fruit_shop_pgdata:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U miao"]
       interval: 5s
@@ -29,4 +32,4 @@ services:
         condition: service_healthy
 
 volumes:
-  pgdata:
+  miao_fruit_shop_pgdata:

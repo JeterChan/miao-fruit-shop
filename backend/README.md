@@ -11,14 +11,19 @@ cp .env.example .env          # 視需要調整連線/密鑰
 uv sync                       # 安裝相依
 ```
 
-啟動本機 PostgreSQL(擇一):
-- 用 compose:`docker compose up -d db`
-- 或本機已裝 PostgreSQL 17
+啟動本專案專屬 PostgreSQL dev DB:
+
+```bash
+docker compose up -d db
+```
+
+Compose 會建立 `miao-fruit-shop-db` container，並把 container 內的 `5432`
+映射到本機 `55432`，避免誤連到其他專案的 PostgreSQL。
 
 建立測試資料庫(一次性):
 ```bash
 docker compose exec db createdb -U miao miao_test   # 用 compose 時
-# 或本機:createdb -h localhost -U miao miao_test
+# 或從 host 連線:createdb -h localhost -p 55432 -U miao miao_test
 ```
 
 ## 跑起來
