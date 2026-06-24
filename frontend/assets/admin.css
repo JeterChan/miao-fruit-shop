@@ -726,9 +726,78 @@ button { cursor: pointer; }
 }
 .img-gallery__upload-btn.is-uploading { font-size: 12px; cursor: wait; }
 
-/* ── Spec table scroll wrapper ── */
+/* ── Spec table scroll wrapper（桌機）── */
 .adm-spec-scroll { overflow-x: auto; }
 .adm-table--specs { min-width: 700px; }
+.adm-table--specs tbody tr { cursor: pointer; }
+.adm-spec-add { padding: 12px 16px; }
+
+/* ── Spec cards（手機,整張可點擊編輯）── */
+/* 預設隱藏,於 ≤768px 由媒體查詢切換顯示、同時隱藏桌機表格 */
+.adm-spec-cards { display: none; }
+.adm-spec-card {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: baseline;
+  column-gap: 12px;
+  row-gap: 2px;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--sage-100);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background var(--dur-micro);
+}
+.adm-spec-card:last-child { border-bottom: none; }
+.adm-spec-card:active { background: #FAF5ED; }
+.adm-spec-card:focus-visible {
+  outline: 2px solid var(--sage-500);
+  outline-offset: -2px;
+}
+.adm-spec-card__name {
+  grid-column: 1; grid-row: 1;
+  font-size: 16px; font-weight: 600; color: var(--brown-800);
+  line-height: 1.3;
+}
+.adm-spec-card__price {
+  grid-column: 2; grid-row: 1;
+  font-size: 16px; font-weight: 700; color: var(--brown-900);
+  text-align: right; white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.adm-spec-card__qty {
+  grid-column: 1; grid-row: 2;
+  font-size: 13px; color: var(--brown-500);
+}
+.adm-spec-card__stock {
+  grid-column: 2; grid-row: 2;
+  font-size: 13px; color: var(--brown-500);
+  text-align: right; white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.adm-spec-card__badges {
+  grid-column: 1 / -1; grid-row: 3;
+  display: flex; flex-wrap: wrap; align-items: center; gap: 6px;
+  margin-top: 8px;
+}
+.adm-spec-card__imgcount { font-size: 12.5px; color: var(--brown-400); }
+.adm-spec-card__controls {
+  grid-column: 1 / -1; grid-row: 4;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px;
+  margin-top: 12px; padding-top: 12px;
+  border-top: 1px dashed var(--sage-200);
+}
+.adm-spec-card__reorder { display: flex; gap: 6px; }
+.adm-spec-card__reorder .adm-order-btn {
+  width: 38px; height: 32px; font-size: 12px; border-radius: var(--r-sm);
+}
+.adm-spec-card__hint {
+  font-size: 12.5px; color: var(--sage-600);
+  white-space: nowrap;
+}
+.adm-spec-card__controls .adm-btn--danger {
+  height: 32px; padding: 0 16px; font-size: 13.5px;
+}
 
 /* ── Dashboard stat cards（訂單查詢上方的三個統計區塊）── */
 .adm-stats {
@@ -889,4 +958,28 @@ button { cursor: pointer; }
   .adm-table--orders tbody tr:hover td { background: transparent; }
   .adm-table--orders tbody tr.is-selected { background: #F5EDE0; }
   .adm-table--orders tbody tr.is-selected td { background: transparent; }
+}
+
+/* ── 規格管理:窄螢幕改用卡片(點卡片即編輯,免橫向捲動)── */
+@media (max-width: 768px) {
+  .adm-spec-scroll { display: none; }
+  .adm-spec-cards { display: block; }
+}
+
+/* ── 編輯/新增 Modal 在手機上的版面 ── */
+@media (max-width: 640px) {
+  .adm-modal { width: 94vw; max-height: 92vh; }
+  .adm-modal--product { max-width: 94vw; }
+  .adm-modal__product-body {
+    padding: 16px 16px 20px;
+    gap: 16px;
+    max-height: calc(92vh - 116px);
+  }
+  /* 規格表單單欄,避免兩欄被擠到換行 */
+  .adm-spec-form { grid-template-columns: 1fr; gap: 12px; }
+  .adm-field__input { font-size: 16px; padding: 9px 11px; } /* 16px 避免 iOS 自動放大 */
+  /* 圖片格子在窄螢幕縮小一點,一行多塞幾張 */
+  .img-gallery__grid { grid-template-columns: repeat(auto-fill, minmax(84px, 1fr)); }
+  .adm-modal__head { padding: 14px 16px 12px; }
+  .adm-modal__foot { padding: 12px 16px; }
 }
