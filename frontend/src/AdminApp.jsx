@@ -815,7 +815,7 @@ function SpecEditModal({ spec, token, onClose, onSaved }) {
         </div>
         <div className="adm-modal__foot">
           <span />
-          <button className="adm-btn adm-btn--ghost" onClick={onClose}>取消</button>
+          <button className="adm-btn adm-btn--cancel" onClick={onClose}>取消</button>
           <button
             className="adm-modal__update-btn"
             onClick={handleSave}
@@ -950,7 +950,7 @@ function CreateSpecModal({ productId, token, onClose, onCreated }) {
         </div>
         <div className="adm-modal__foot">
           <span />
-          <button className="adm-btn adm-btn--ghost" onClick={onClose}>取消</button>
+          <button className="adm-btn adm-btn--cancel" onClick={onClose}>取消</button>
           <button className="adm-modal__update-btn" onClick={handleCreate} disabled={saving}>
             {saving ? '新增中…' : '新增並上傳圖片'}
           </button>
@@ -1213,7 +1213,7 @@ function ProductsTab({ token }) {
             </div>
             <div className="adm-modal__foot">
               <span />
-              <button className="adm-btn adm-btn--ghost" onClick={() => setConfirmDelete(null)}>取消</button>
+              <button className="adm-btn adm-btn--secondary" onClick={() => setConfirmDelete(null)}>取消</button>
               <button className="adm-btn adm-btn--danger" onClick={handleDelete} disabled={deleting}>
                 {deleting ? '刪除中…' : '確認刪除'}
               </button>
