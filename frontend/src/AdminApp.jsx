@@ -80,6 +80,9 @@ const LINE_FRIENDSHIP_LABELS = {
   unknown: '未確認',
 };
 
+/* 阻止點擊事件冒泡到「整列/整張卡片 → 開啟編輯」的處理器 */
+const stop = (e) => e.stopPropagation();
+
 const money = (n) => `NT$ ${Number(n || 0).toLocaleString()}`;
 const dateText = (s) =>
   s ? new Date(s).toLocaleString('zh-TW', { hour12: false }) : '—';
@@ -1038,6 +1041,7 @@ function ProductsTab({ token }) {
           {/* Spec rows */}
           {expanded[p.id] && (
             <>
+              {/* 桌機:表格(整列可點擊編輯) */}
               <div className="adm-spec-scroll">
               <table className="adm-table adm-table--specs">
                 <thead>
@@ -1055,8 +1059,8 @@ function ProductsTab({ token }) {
                 </thead>
                 <tbody>
                   {(p.specs || []).map((s, idx, arr) => (
-                    <tr key={s.id}>
-                      <td>
+                    <tr key={s.id} onClick={() => setEditSpec(s)} title="點擊編輯">
+                      <td onClick={stop}>
                         <div className="adm-order-btns">
                           <button
                             className="adm-order-btn"
@@ -1087,7 +1091,7 @@ function ProductsTab({ token }) {
                           {s.is_active ? '上架' : '下架'}
                         </span>
                       </td>
-                      <td>
+                      <td onClick={stop}>
                         <div style={{ display: 'flex', gap: 6 }}>
                           <button
                             className="adm-btn adm-btn--secondary"
@@ -1106,7 +1110,66 @@ function ProductsTab({ token }) {
                 </tbody>
               </table>
               </div>
-              <div style={{ padding: '10px 16px' }}>
+
+              {/* 手機:卡片(整張可點擊編輯) */}
+              <div className="adm-spec-cards">
+                {(p.specs || []).map((s, idx, arr) => (
+                  <div
+                    key={s.id}
+                    className="adm-spec-card"
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => setEditSpec(s)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        setEditSpec(s);
+                      }
+                    }}
+                  >
+                    <div className="adm-spec-card__name">{s.label}</div>
+                    <div className="adm-spec-card__price">
+                      NT$ {Number(s.price).toLocaleString()}
+                    </div>
+                    <div className="adm-spec-card__qty">{s.qty_text}</div>
+                    <div className="adm-spec-card__stock">庫存 {s.stock_qty}</div>
+                    <div className="adm-spec-card__badges">
+                      <span className={`adm-badge adm-badge--${s.stock_status === 'in' ? 'confirmed' : s.stock_status === 'low' ? 'shipping' : 'cancelled'}`}>
+                        {STOCK_STATUS_LABELS[s.stock_status] || s.stock_status}
+                      </span>
+                      <span className={`adm-badge adm-badge--${s.is_active ? 'confirmed' : 'cancelled'}`}>
+                        {s.is_active ? '上架' : '下架'}
+                      </span>
+                      <span className="adm-spec-card__imgcount">
+                        {s.images?.length ?? 0} 張圖
+                      </span>
+                    </div>
+                    <div className="adm-spec-card__controls" onClick={stop}>
+                      <div className="adm-spec-card__reorder">
+                        <button
+                          className="adm-order-btn"
+                          disabled={idx === 0}
+                          onClick={() => moveSpec(arr, idx, -1)}
+                          aria-label="往上移"
+                        >▲</button>
+                        <button
+                          className="adm-order-btn"
+                          disabled={idx === arr.length - 1}
+                          onClick={() => moveSpec(arr, idx, 1)}
+                          aria-label="往下移"
+                        >▼</button>
+                      </div>
+                      <span className="adm-spec-card__hint">點一下卡片編輯</span>
+                      <button
+                        className="adm-btn adm-btn--danger"
+                        onClick={() => setConfirmDelete(s)}
+                      >刪除</button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="adm-spec-add">
                 <button
                   className="adm-btn adm-btn--secondary"
                   style={{ fontSize: 14 }}
